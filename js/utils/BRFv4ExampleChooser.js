@@ -71,9 +71,9 @@
 		QuickSettings.useExtStyleSheet();
 
 		brfv4Example.gui.exampleChooser = QuickSettings.create(
-			7, 135, "Example Chooser", brfv4Example.dom.createDiv("_settingsLeft"))
-			.setWidth(300)
-			.addHTML("Switch between examples", "Choose which example to run.")
+			2, 2, "Example Chooser", brfv4Example.dom.createDiv("_settingsRight"))
+			.setWidth(250)
+			.addHTML("Switch between examples", "Which example do you want to try? Use the drop down to choose another example.").hideTitle("Switch between examples")
 			.addDropDown("_example", labels, onExampleChosen)
 			.hideTitle("_example")
 			.setValuesFromJSON({ "_example": 6}); // "basic - face tracking - track single face"

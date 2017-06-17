@@ -43,7 +43,7 @@ brfv4Example.start = function() {
 
 		"https://webrtc.github.io/adapter/adapter-latest.js",	// webcam polyfill for older browsers
 
-		"js/libs/quicksettings/quicksettings_tiny.min.css",		// gui elements
+		"js/libs/quicksettings/quicksettings.min.css",			// gui elements
 		"js/libs/quicksettings/quicksettings.js",
 
 		"js/libs/highlight/highlight_tomorrow.css",				// code highlighter

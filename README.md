@@ -14,11 +14,13 @@ needs. Once you decided to use BRFv4 in your project, please contact us for a co
 
 ### Visit us online.
 
++ [Github](https://github.com/Tastenkunst)
++ [Demo](https://tastenkunst.github.io/brfv4_javascript_examples/)
++ [Docs / API](https://tastenkunst.github.io/brfv4_docs/)
++ [What can I do with it?](https://tastenkunst.github.io/brfv4_docs/what_can_i_do_with_it.html)
 + [Website](https://www.beyond-reality-face.com)
 + [Facebook](https://www.facebook.com/BeyondRealityFace)
 + [Twitter](https://twitter.com/tastenkunst)
-+ [Github](https://github.com/Tastenkunst)
-+ [Docs / API](https://tastenkunst.github.io/brfv4_docs/)
 
 ### Getting started.
 
@@ -62,7 +64,6 @@ All available packages have roughly the same content and come with a set of exam
 
 ### What image size does BRFv4 need?
 
-
 You can input any image size.
 
 Internally BRFv4 uses a DYNx480 (landscape) or 480xDYN (portrait) image for the analysis. So 480px is the base size that every other input size get's scaled to, eg.
@@ -86,20 +87,15 @@ eg. telling BRF what face sizes to initially detect:
 ```markdown
 brfManager.setFaceDetectionParams(int minFaceSize, int maxFaceSize, int stepSize, int minMergeNeighbors);
 ```
-
 If you work with a 640x480 camera stream, it would be something like this:
-
 ```markdown
 brfManager.setFaceDetectionParams(144, 432, 12, 8);
 ```
-
 Where as if you work with a 1280x720 camera stream, you will need something like this:
-
 ```markdown
 brfManager.setFaceDetectionParams(216, 648, 12, 8);
 ```
 In the examples we generalize it a bit:
-
 ```javascript
 // We have either a landscape area (desktop), then choose height or
 // we have a portrait area (mobile), then choose width as max face size.
@@ -112,15 +108,28 @@ if(_faceDetectionRoi.width < _faceDetectionRoi.height) {
 
 brfManager.setFaceDetectionParams(maxFaceSize * 0.30, maxFaceSize * 0.90, 12, 8);
 ```
-
 More on that in the API, see link above.
 
 ### Release notes
 
+v4.0.0 - 20th June 2017
+
+It's done! After over a year of development Tastenkunst is proud to announce the release of BRFv4.
+
++ Changed: Completely rewritten the C++ core: image handling, face detection and tracking algorithms etc.
++ Changed: Image data can now be of any site. BRFv4 will handle the scaling internally.
++ Changed: Point tracking and face tracking can now be done simultaneously.
++ Changed: Face tracking algorithm changed from ASM to ERT. This comes with an increased file size though (For JS up from 2MB to 10MB)
++ Added: Multi face tracking. It is not possible to track more than one face.
++ Added: Example project for native Android (Java, Android Studio project)
++ Added: Example project for macOS (C++, Xcode project, needs brewed OpenCV for camera handling and drawing)
++ Added: Example project for Windows (C++, Visual Studio 2017 project, needs OpenCV for camera handling and drawing)
++ Added: Adobe AIR native extension now supports Windows, macOS, iOS and Android.
++ Removed: Support for Flash Player (SWF in Browser).
+
 ### Licenses
 
 Used Haar Cascade: haarcascade_frontalface_default.xml
-
 ```
 <!--
     Stump-based 24x24 discrete(?) adaboost frontal face detector.

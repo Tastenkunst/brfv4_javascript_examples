@@ -7,7 +7,7 @@ It is a real time face detection and tracking SDK. You put in image data (camera
 ### Ready to try!
 
 Read the EULA (eula.txt) carefully before using the SDK. Once you decide to use BRFv4 commercially, you will get a 
-separate license agreement, that you must agree to. You can try SDK free of charge to evaluate if it fits your projects 
+separate license agreement, that you must agree to. You can try the SDK free of charge to evaluate if it fits your projects 
 needs. Once you decided to use BRFv4 in your project, please contact us for a commercial license:
 
 + http://www.tastenkunst.com/#/contact
@@ -26,27 +26,27 @@ To test BRFv4 simply visit the Javascript demo site:
 
 + https://tastenkunst.github.io/brfv4_javascript_examples/
 
-This page also include all available packages for download.
+This page also includes all available packages for download.
 
 ### Which platforms does it support?
 
-##### HTML5/Browser – Javascript (works in Chrome/Firefox/Edge/Opera/Safari 11)
+#### HTML5/Browser – Javascript (works in Chrome/Firefox/Edge/Opera/Safari 11)
 Run the index.html on a local server.
 
-##### iOS - ObjectiveC/C++
+#### iOS - ObjectiveC/C++
 Open the Xcode project. Attach your iOS device and run the example app on your device.
 
-##### Android - Java 
+#### Android - Java 
 Open the Android Studio project. Attach your Android device and run the example app on your device.
 
-##### macOS - C++ using OpenCV for camera handling and drawing 
+#### macOS - C++ using OpenCV for camera handling and drawing 
 Have OpenCV brewed (opencv3) on your system. Open the Xcode project and just run it on your Mac.
 
-##### Windows - C++ using OpenCV for camera handling and drawing 
+#### Windows - C++ using OpenCV for camera handling and drawing 
 Good luck in trying to compile OpenCV for your Windows. Update the Visual Studio (2017) project properties that mention 
 OpenCV. Then run the Release x64 target. Fingers crossed!
 
-##### Adobe AIR - Actionscript 3 on Windows, macOS, iOS and Android 
+#### Adobe AIR - Actionscript 3 on Windows, macOS, iOS and Android 
 Use your preferred IDE. Add the src folder and the ANE itself to your class path and run the example class on your 
 desired device (not in a simulator). Unfortunately we had to discontinue Flash Player (SWF in browser) support.
 

@@ -14,8 +14,8 @@
 				"<a href='https://github.com/Tastenkunst/' target='_blank'>Github</a><br/><br/>").hideTitle("Info")
 			.addHTML("Other Links", "Other useful links:<br><br>" +
 				"<a href='https://tastenkunst.github.io/brfv4_docs/what_can_i_do_with_it.html' target='_blank'>What can I do with it?</a><br/>" +
-				"<a href='https://www.beyond-reality-face.com' target='_blank'>Website</a><br/>" +
-				"<a href='https://www.facebook.com/BeyondRealityFace' target='_blank'>Facebook</a><br/>" +
+				// "<a href='https://www.beyond-reality-face.com' target='_blank'>Website</a><br/>" +
+				// "<a href='https://www.facebook.com/BeyondRealityFace' target='_blank'>Facebook</a><br/>" +
 				"<a href='https://twitter.com/tastenkunst' target='_blank'>Twitter</a><br/><br/>"
 			).hideTitle("Other Links")
 		}

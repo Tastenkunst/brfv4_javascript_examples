@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Beyond Reality Face - BRFv4 - HTML5/Javascript face tracking</title>
+	<script async src="js/libs/brf/BRFv4_JS_trial.js"></script>
+</head>
+
+<body>
+
+<img 	id="_image" src="assets/brfv4_portrait_marcel.jpg" style="display: none;"/>
+<canvas id="_imageData"></canvas>
+
+<script>
+
+	function initExample() {
+
+		var image		= document.getElementById("_image");		// our analyzed image
+		var imageData	= document.getElementById("_imageData");	// image data for BRFv4
+
+		var brfManager	 = null;
+		var resolution	 = null;
+		var brfv4		= null;
+
+		waitForSDK();
+
+		function waitForSDK() {
+
+			if(brfv4 === null) {
+				brfv4 = {locateFile: function() { return "js/libs/brf/BRFv4_JS_trial.js.mem" }};
+				initializeBRF(brfv4);
+			}
+
+			if(brfv4.sdkReady) {
+				initSDK();
+			} else {
+				setTimeout(waitForSDK, 100);
+			}
+		}
+
+		function initSDK() {
+
+			// Resize the canvas to match the webcam video size.
+			imageData.width		= image.width;
+			imageData.height	= image.height;
+
+			resolution	= new brfv4.Rectangle(0, 0, imageData.width, imageData.height);
+
+			brfManager	= new brfv4.BRFManager();
+			brfManager.init(resolution, resolution, "com.tastenkunst.brfv4.js.examples.minimal.image");
+
+			trackFaces();
+		}
+
+		function trackFaces() {
+
+			var imageDataCtx = imageData.getContext("2d");
+
+			imageDataCtx.drawImage(image, 0, 0, resolution.width, resolution.height);
+
+			brfManager.update(imageDataCtx.getImageData(0, 0, resolution.width, resolution.height).data);
+
+			var faces = brfManager.getFaces();
+
+			for(i = 0; i < faces.length; i++) {
+
+				var face = faces[i];
+
+				if(		face.state === brfv4.BRFState.FACE_TRACKING_START ||
+						face.state === brfv4.BRFState.FACE_TRACKING) {
+
+					imageDataCtx.strokeStyle="#00a0ff";
+
+					for(var k = 0; k < face.vertices.length; k += 2) {
+						imageDataCtx.beginPath();
+						imageDataCtx.arc(face.vertices[k], face.vertices[k + 1], 2, 0, 2 * Math.PI);
+						imageDataCtx.stroke();
+					}
+				}
+			}
+		}
+	}
+
+	window.onload = initExample;
+
+</script>
+
+</body>
+
+</html>

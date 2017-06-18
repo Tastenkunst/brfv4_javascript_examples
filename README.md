@@ -4,6 +4,8 @@
 
 It is a real time face detection and tracking SDK. You put in image data (camera stream or single picture) and it outputs facial data.
 
+![alt text](readme_img.jpg "BRFv4")
+
 ### Ready to try!
 
 Read the EULA (eula.txt) carefully before using the SDK. Once you decide to use BRFv4 commercially, you will get a 

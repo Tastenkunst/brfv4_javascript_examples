@@ -34,11 +34,7 @@ var brfv4 = {locateFile: function(fileName) { return "js/libs/brf/BRFv4_JS_trial
 brfv4Example.start = function() {
 
 	brfv4Example.loader.preload([
-		{
-			"src": "js/libs/brf/BRFv4_JS_trial.js.mem",
-			"type": createjs.AbstractLoader.BINARY,
-			"id": "memFile"
-		},
+
 		"js/libs/brf/BRFv4_JS_trial.js",						// BRFv4 SDK
 
 		"https://webrtc.github.io/adapter/adapter-latest.js",	// webcam polyfill for older browsers
@@ -110,22 +106,6 @@ brfv4Example.trace = function(msg, error) {
 			return;
 		}
 
-		function onFileLoaded(event) {
-			var item = event.item;
-			var id = item.id;
-			// var req = brfv4.memoryInitializerRequest;
-			var req = 	{
-				response: null, status: 200, callback: null, addEventListener: function(type, callback) {
-					req.callback = callback;
-				}
-			};
-
-			if(id === "memFile" && req) {
-				req.response = event.result;
-				if(req.callback) { req.callback(); }
-			}
-		}
-
 		function onPreloadProgress(event) {
 			loader.setProgressBar(event.loaded, true);
 		}
@@ -138,7 +118,6 @@ brfv4Example.trace = function(msg, error) {
 		var queue = loader.queuePreloader = new createjs.LoadQueue(true);
 		queue.on("progress", onPreloadProgress);
 		queue.on("complete", onPreloadComplete);
-		queue.on("fileload", onFileLoaded);
 		queue.loadManifest(filesToLoad, true);
 	};
 

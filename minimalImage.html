@@ -8,7 +8,7 @@
 
 <body>
 
-<img 	id="_image" src="assets/brfv4_portrait_marcel.jpg" style="display: none;"/>
+<img 	id="_image" src="assets/brfv4_women_young.jpg" style="display: none;"/>
 <canvas id="_imageData"></canvas>
 
 <script>
@@ -58,7 +58,11 @@
 
 			imageDataCtx.drawImage(image, 0, 0, resolution.width, resolution.height);
 
-			brfManager.update(imageDataCtx.getImageData(0, 0, resolution.width, resolution.height).data);
+			var data = imageDataCtx.getImageData(0, 0, resolution.width, resolution.height).data;
+
+			for(var i = 0; i < 10; i++) {
+				brfManager.update(data);
+			}
 
 			var faces = brfManager.getFaces();
 

@@ -110,8 +110,8 @@
 		QuickSettings.useExtStyleSheet();
 
 		gui.pictureChooser = QuickSettings.create(
-			7, 455, "Picture Chooser", dom.createDiv("_settingsLeft"))
-			.setWidth(200)
+			2, 505, "Picture Chooser", dom.createDiv("_settingsRight"))
+			.setWidth(250)
 			.addHTML("Choose a picture from the list", "")
 			.addDropDown("_picture", labels, onImageChosen)
 			.hideTitle("_picture")

@@ -19,7 +19,7 @@ Tools used for this demo:
 
 There are also two minimal examples that don't have any dependencies apart from BRFv4:
 
-#### "Minimal Webcam" (minimalWebcam.html)
+#### "Minimal Webcam" ([minimalWebcam.html](https://tastenkunst.github.io/brfv4_javascript_examples/minimalWebcam.html)) 
 
 ##### DOM
 
@@ -54,7 +54,7 @@ Then we setup an interval of 30FPS to ...
 We want to look into a mirror. That's why the canvas gets transformed, the video gets drawn and the canvas
 gets transformed again to draw the results. In this example we draw the 68 landmarks of a face.
 
-#### "Minimal Image" (minimalImage.html)
+#### "Minimal Image" ([minimalImage.html](https://tastenkunst.github.io/brfv4_javascript_examples/minimalImage.html)) 
 
 ##### DOM
 

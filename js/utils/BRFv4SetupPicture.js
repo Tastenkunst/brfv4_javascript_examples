@@ -21,6 +21,7 @@
 	for (var key in urlMap) { labels.push(key); } // Fill in the labels.
 
 	var example		= brfv4Example;
+	var trace		= example.trace;
 	var dom			= example.dom;
 	var imageData	= example.imageData;
 	var gui			= example.gui;
@@ -40,7 +41,7 @@
 	};
 
 	picture.onImageLoadError = function(event) {
-		brfv4.trace("Error loading image.", true);
+		trace("Error loading image.", true);
 	};
 
 	picture.loadImage = function(url) {
@@ -56,7 +57,7 @@
 	picture.setup = function(imageDataCanvas, onImageDataReady) {
 
 		if(!imageDataCanvas) {
-			brfv4.trace("Please add a <canvas> tag with id='_imageData' to the DOM.", true);
+			trace("Please add a <canvas> tag with id='_imageData' to the DOM.", true);
 			return;
 		}
 

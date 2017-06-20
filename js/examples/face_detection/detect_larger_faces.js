@@ -29,10 +29,10 @@
 			maxFaceSize = _faceDetectionRoi.width;
 		}
 
-		// Merged faces (yellow) will only show up it they are at least 60% of maxFaceSize.
+		// Merged faces (yellow) will only show up if they are at least 60% of maxFaceSize.
 		// So: come really close the your webcam to see a detection result.
 
-		// Default would be 30% of maxFaceSize as minimal value and 90% of mmxFaceSize
+		// Default would be 30% of maxFaceSize as minimal value and 90% of maxFaceSize
 		// as maximal value, but here we set larger desired sizes.
 
 		brfManager.setFaceDetectionParams(maxFaceSize * 0.60, maxFaceSize * 1.00, 12, 8);

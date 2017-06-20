@@ -43,11 +43,11 @@ Open the Xcode project. Attach your iOS device and run the example app on your d
 #### Android - Java 
 Open the Android Studio project. Attach your Android device and run the example app on your device.
 
-#### macOS - C++ using OpenCV for camera handling and drawing 
-Have OpenCV brewed (opencv3) on your system. Open the Xcode project and just run it on your Mac.
+#### macOS - C++ utilizing OpenCV for camera access and drawing
+Have [OpenCV](http://opencv.org/) brewed (opencv3) on your system. Open the Xcode project and just run it on your Mac.
 
-#### Windows - C++ using OpenCV for camera handling and drawing 
-Good luck in trying to compile OpenCV for your Windows. Update the Visual Studio (2017) project properties that mention 
+#### Windows - C++ utilizing OpenCV for camera access and drawing
+Good luck in trying to compile [OpenCV](http://opencv.org/) for your Windows. Update the Visual Studio (2017) project properties that mention 
 OpenCV. Then run the Release x64 target. Fingers crossed!
 
 #### Adobe AIR - Actionscript 3 on Windows, macOS, iOS and Android 
@@ -122,7 +122,7 @@ It's done! After over a year of development Tastenkunst is proud to announce the
 + Changed: Image data can now be of any site. BRFv4 will handle the scaling internally.
 + Changed: Point tracking and face tracking can now be done simultaneously.
 + Changed: Face tracking algorithm changed from ASM to ERT. This comes with an increased file size though (For JS up from 2MB to 10MB)
-+ Added: Multi face tracking. It is not possible to track more than one face.
++ Added: Multi face tracking. It is now possible to track more than one face.
 + Added: Example project for native Android (Java, Android Studio project)
 + Added: Example project for macOS (C++, Xcode project, needs brewed OpenCV for camera handling and drawing)
 + Added: Example project for Windows (C++, Visual Studio 2017 project, needs OpenCV for camera handling and drawing)

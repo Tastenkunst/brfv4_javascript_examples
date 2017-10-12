@@ -8,7 +8,7 @@
 
 <body>
 
-<video	id="_webcam" style="display: none;"></video>
+<video	id="_webcam" style="display: none;" playsinline></video>
 <canvas id="_imageData"></canvas>
 
 <script>
@@ -74,7 +74,7 @@
 			brfManager	= new brfv4.BRFManager();
 			brfManager.init(resolution, resolution, "com.tastenkunst.brfv4.js.examples.minimal.webcam");
 
-			setInterval(trackFaces, 1000/30);
+			trackFaces();
 		}
 
 		function trackFaces() {
@@ -105,6 +105,8 @@
 					}
 				}
 			}
+
+			requestAnimationFrame(trackFaces);
 		}
 	}
 

@@ -15,10 +15,14 @@
 (function(){
 	"use strict";
 
-	var example		= brfv4Example;
-	var imageData	= example.imageData;
-	var trace		= example.trace;
-	var webcam		= imageData.webcam;
+	var example			= brfv4Example;
+	var imageData		= example.imageData;
+	var trace			= example.trace;
+	var webcam			= imageData.webcam;
+
+	var ua				= window.navigator.userAgent;
+	var isIOS11			= (ua.indexOf("iPad") > 0 || ua.indexOf("iPhone") > 0) && ua.indexOf("OS 11_") > 0;
+	var stoppedOniOS	= 0;
 	
 	webcam.setupStream = function(video, width, height, fps, callback) {
 
@@ -94,6 +98,14 @@
 			// Now we know the dimensions of the stream. So tell the app, the camera is ready.
 			webcam.isPlaying = true;
 
+			if (webcam.stream !== null && isIOS11 && stoppedOniOS === 0) {
+				console.log('Turn off camera on iOS 11 and restart it later.');
+				stoppedOniOS = 1;
+				webcam.stream.getTracks().forEach(function(track) {
+					track.stop();
+				});
+			}
+
 			if(webcam.onCameraReady) {
 				webcam.onCameraReady(true);
 			}
@@ -152,6 +164,18 @@
 		};
 
 		imageData.update = function() {
+
+			//workaround the iOS startup hickup.
+			if(isIOS11 && stoppedOniOS === 1) {
+				stoppedOniOS = 2;
+
+				// Start the camera stream again on iOS.
+				setTimeout(function () {
+					console.log('delayed camera restart for iOS 11 in 2 seconds.');
+					webcam.setupStream(webcam.video, webcam.constraints.video.width, webcam.constraints.video.height, 30, null);
+				}, 2000)
+			}
+
 			var _imageDataCtx = imageDataCanvas.getContext("2d");
 			_imageDataCtx.setTransform(-1.0, 0, 0, 1, resolution.width, 0); // mirrored
 			_imageDataCtx.drawImage(webcamVideo, 0, 0, resolution.width, resolution.height);

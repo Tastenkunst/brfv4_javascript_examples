@@ -1,4 +1,4 @@
-# Beyond Reality Face SDK - v4.0.0 (BRFv4) - Readme
+# Beyond Reality Face SDK - v4.0.1 (BRFv4) - Readme
 
 ### What is BRFv4?
 
@@ -112,7 +112,27 @@ brfManager.setFaceDetectionParams(maxFaceSize * 0.30, maxFaceSize * 0.90, 12, 8)
 ```
 More on that in the API, see link above.
 
+### FAQ
+
+Can I track other objects like hands or neck?
++ No, it's a face tracker only.
+
+Can you increate the performance?
++ We could remove some calculations in a commercial version, if you want to, but this comes at the price of reduced accuracy.
+
+Can you make the library smaller?
++ Usually the descriptor would be 80MB and more. It's already only 9MB for most binaries. So: We could go down in 1,5MB steps, but this will also massively decrease accuracy.
+
 ### Release notes
+
+v4.0.1 - 09th November 2017
+
++ JS: Added: WASM export to Javascript SDK.
++ JS: Fix: Found a workaround for iOS 11 (in Safari) for starting the camera.
++ JS: Updated: CreateJS to v1.0.2 (easel) and v1.0.1 (preload).
++ JS: Updated: ThreeJS to r88.
++ Minor cleanups
++ Known issue: JS SDK is slow in Chrome 63 because of this bug: https://bugs.chromium.org/p/chromium/issues/detail?id=768775
 
 v4.0.0 - 20th June 2017
 

@@ -21,11 +21,24 @@ var brfv4Example = {
 	stats: {}							// fps meter
 };
 
+var brfv4BaseURL = "js/libs/brf_wasm/";
+
+(function() {
+
+	// detect WebAssembly support and load either WASM or ASM version of BRFv4
+	var support	= (typeof WebAssembly === 'object');
+
+	if (!support) { brfv4BaseURL = "js/libs/brf_asmjs/"; }
+
+	console.log("Checking support of WebAssembly: " + support + " " + (support ? "loading WASM (not ASM)." : "loading ASM (not WASM)."));
+
+})();
+
 //
 // Namespace: brfv4 is the (mandatory) namespace for the BRFv4 library.
 //
 
-var brfv4 = {locateFile: function(fileName) { return "js/libs/brf/BRFv4_JS_trial.js.mem"; }};
+var brfv4 = {locateFile: function(fileName) { return brfv4BaseURL + fileName; }};
 
 //
 // Demo entry point: preloading js files.
@@ -35,7 +48,7 @@ brfv4Example.start = function() {
 
 	brfv4Example.loader.preload([
 
-		"js/libs/brf/BRFv4_JS_trial.js",						// BRFv4 SDK
+		brfv4BaseURL + "BRFv4_JS_trial.js",						// BRFv4 SDK
 
 		"https://webrtc.github.io/adapter/adapter-latest.js",	// webcam polyfill for older browsers
 
@@ -45,8 +58,8 @@ brfv4Example.start = function() {
 		"js/libs/highlight/highlight_tomorrow.css",				// code highlighter
 		"js/libs/highlight/highlight.pack.js",
 
-		"js/libs/createjs/easeljs-0.8.2.min.js",				// canvas drawing lib
-		"js/libs/threejs/three.js",								// ThreeJS: a 3D engine
+		"js/libs/createjs/easeljs.min.js",						// canvas drawing lib
+		"js/libs/threejs/three.min.js",							// ThreeJS: a 3D engine
 
 		"js/utils/BRFv4DOMUtils.js",							// DOM handling
 		"js/utils/BRFv4Stats.js",								// FPS meter

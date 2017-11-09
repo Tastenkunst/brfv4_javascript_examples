@@ -34,7 +34,7 @@
 
 		if(typeof fps === "undefined") { fps = 30; }
 
-		createjs.Ticker.setFPS(fps);
+		createjs.Ticker.framerate = fps;
 		createjs.Ticker.addEventListener("tick", drawing.stage);
 	};
 

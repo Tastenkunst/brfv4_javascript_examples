@@ -28,7 +28,7 @@
 
 				// A simple approach with quite a lot false positives. Fast movement can't be
 				// handled properly. This code is quite good when it comes to
-				// starring contest apps though.
+				// staring contest apps though.
 
 				// It basically compares the old positions of the eye points to the current ones.
 				// If rapid movement of the current points was detected it's considered a blink.

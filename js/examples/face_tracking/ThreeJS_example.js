@@ -2,7 +2,7 @@
 	"use strict";
 
 	var t3d = brfv4Example.drawing3d.t3d;
-	var numFacesToTrack = 2;
+	var numFacesToTrack = 1;
 
 	function loadModels() {
 

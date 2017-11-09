@@ -32,8 +32,8 @@
 
 				var eyeDist = calcDistance(p0, p1);
 
-				setPoint(face.vertices, 62, p0); // mouth corner left
-				setPoint(face.vertices, 66, p1); // mouth corner right
+				setPoint(face.vertices, 62, p0); // mouth upper inner lip
+				setPoint(face.vertices, 66, p1); // mouth lower inner lip
 
 				var mouthOpen = calcDistance(p0, p1);
 				var yawnFactor = mouthOpen / eyeDist;

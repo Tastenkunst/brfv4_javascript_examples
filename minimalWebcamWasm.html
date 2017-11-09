@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8">
+	<title>Beyond Reality Face - BRFv4 - HTML5/Javascript face tracking</title>
+	<script>
+		var brfv4Example = { stats: {} };
+		var brfv4BaseURL = "js/libs/brf_wasm/";
+	</script>
+	<script async src="js/utils/BRFv4Stats.js"></script>
+	<style>
+		html, body 		{ width:  100%; height:  100%; background-color: #ffffff; margin: 0; padding: 0; overflow: hidden; }
+	</style>
+</head>
+
+<body>
+
+<video	id="_webcam" style="display: none;" playsinline></video>
+<canvas id="_imageData"></canvas>
+
+<script>
+
+	(function() {
+
+		// detect WebAssembly support and load either WASM or ASM version of BRFv4
+		var support	= (typeof WebAssembly === 'object');
+
+		if (!support) { brfv4BaseURL = "js/libs/brf_asmjs/"; }
+
+		console.log("Checking support of WebAssembly: " + support + " " + (support ? "loading WASM (not ASM)." : "loading ASM (not WASM)."));
+
+		var script	= document.createElement("script");
+
+		script.setAttribute("type", "text/javascript");
+		script.setAttribute("async", true);
+		script.setAttribute("src", brfv4BaseURL + "BRFv4_JS_trial.js");
+
+		document.getElementsByTagName("head")[0].appendChild(script);
+	})();
+
+	function initExample() {
+
+		var webcam			= document.getElementById("_webcam");		// our webcam video
+		var imageData		= document.getElementById("_imageData");	// image data for BRFv4
+		var imageDataCtx	= null;
+
+		var brfv4			= null;
+		var brfManager		= null;
+		var resolution		= null;
+		var ua				= window.navigator.userAgent;
+		var isIOS11			= (ua.indexOf("iPad") > 0 || ua.indexOf("iPhone") > 0) && ua.indexOf("OS 11_") > 0;
+
+		var stats			= brfv4Example.stats;
+		if(stats.init) { stats.init(60); }
+
+		startCamera();
+
+		function startCamera() {
+
+			console.log("startCamera");
+
+			// Start video playback once the camera was fetched.
+			function onStreamFetched (mediaStream) {
+
+				console.log("onStreamFetched");
+
+				webcam.srcObject = mediaStream;
+				webcam.play();
+
+				// Check whether we know the video dimensions yet, if so, start BRFv4.
+				function onStreamDimensionsAvailable () {
+
+					console.log("onStreamDimensionsAvailable");
+
+					if (webcam.videoWidth === 0) {
+						setTimeout(onStreamDimensionsAvailable, 100);
+					} else {
+
+						// Resize the canvas to match the webcam video size.
+						imageData.width		= webcam.videoWidth;
+						imageData.height	= webcam.videoHeight;
+						imageDataCtx		= imageData.getContext("2d");
+
+//						onResize();
+//						window.addEventListener("resize", onResize);
+
+						// on iOS we want to close the video stream first and
+						// wait for the heavy BRFv4 initialization to finish.
+						// Once that is done, we start the stream again.
+
+						if(isIOS11) {
+							webcam.pause();
+							webcam.srcObject.getTracks().forEach(function(track) {
+								track.stop();
+							});
+						}
+
+						waitForSDK();
+					}
+				}
+
+				if(imageDataCtx === null) {
+					onStreamDimensionsAvailable();
+				} else {
+					trackFaces();
+				}
+			}
+
+			window.navigator.mediaDevices.getUserMedia({video: {width: 640, height: 480, frameRate: 30}})
+				.then(onStreamFetched).catch(function () { alert("No camera available."); });
+		}
+
+		function waitForSDK() {
+
+			if(brfv4 === null) {
+				brfv4 = { locateFile: function(fileName) { return brfv4BaseURL+fileName; } };
+				initializeBRF(brfv4);
+			}
+
+			if(brfv4.sdkReady) {
+				initSDK();
+			} else {
+				setTimeout(waitForSDK, 100);
+			}
+		}
+
+		function initSDK() {
+
+			resolution	= new brfv4.Rectangle(0, 0, imageData.width, imageData.height);
+			brfManager	= new brfv4.BRFManager();
+			brfManager.init(resolution, resolution, "com.tastenkunst.brfv4.js.examples.minimal.webcam");
+
+			if(isIOS11) {
+				// Start the camera stream again on iOS.
+				setTimeout(function () {
+					console.log('delayed camera restart for iOS 11');
+					startCamera()
+				}, 2000)
+			} else {
+				trackFaces();
+			}
+		}
+
+		function trackFaces() {
+
+			if (stats.start) stats.start();
+
+			imageDataCtx.setTransform(-1.0, 0, 0, 1, resolution.width, 0); // mirrored for draw of video
+			imageDataCtx.drawImage(webcam, 0, 0, resolution.width, resolution.height);
+			imageDataCtx.setTransform( 1.0, 0, 0, 1, 0, 0); // unmirrored for draw of results
+
+			brfManager.update(imageDataCtx.getImageData(0, 0, resolution.width, resolution.height).data);
+
+			var faces = brfManager.getFaces();
+
+			for(var i = 0; i < faces.length; i++) {
+
+				var face = faces[i];
+
+				if(		face.state === brfv4.BRFState.FACE_TRACKING_START ||
+						face.state === brfv4.BRFState.FACE_TRACKING) {
+
+					imageDataCtx.strokeStyle="#00a0ff";
+
+					for(var k = 0; k < face.vertices.length; k += 2) {
+						imageDataCtx.beginPath();
+						imageDataCtx.arc(face.vertices[k], face.vertices[k + 1], 2, 0, 2 * Math.PI);
+						imageDataCtx.stroke();
+					}
+				}
+			}
+
+			if (stats.end) stats.end();
+
+			requestAnimationFrame(trackFaces);
+		}
+
+		function onResize () {
+
+			var imageData		= document.getElementById("_imageData");	// image data for BRFv4
+
+			var ww = window.innerWidth;
+			var wh = window.innerHeight;
+
+			var s = wh / imageData.height;
+
+			if (imageData.width * s < ww) {
+				s = ww / imageData.width;
+			}
+
+			var iw = imageData.width * s;
+			var ih = imageData.height * s;
+			var ix = (ww - iw) * 0.5;
+			var iy = (wh - ih) * 0.5;
+
+			imageData.style.transformOrigin = "0% 0%";
+			imageData.style.transform = "matrix("+s+", 0, 0, "+s+", "+ix+", "+iy+")";
+		}
+	}
+
+	window.onload = initExample;
+
+</script>
+
+</body>
+
+</html>

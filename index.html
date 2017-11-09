@@ -7,22 +7,21 @@
 	<link rel="stylesheet" type="text/css" href="css/brfv4_examples_theme.css">
 	<title>Beyond Reality Face - BRFv4 - HTML5/Javascript face tracking</title>
 
-	<script src="js/libs/createjs/preloadjs-0.6.2.min.js"></script>
+	<!--<script src="js/libs/createjs/preloadjs-0.6.2.min.js"></script>-->
+	<script src="js/libs/createjs/preloadjs.min.js"></script>
 	<script src="js/BRFv4Demo.js"></script>
 
 	<script>
 		window.onload = brfv4Example.start; //see js/BRFv4Demo.js
 	</script>
 
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-5620419-18"></script>
 	<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-		ga('create', 'UA-5620419-18', 'auto');
-		ga('send', 'pageview');
-
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-5620419-18');
 	</script>
 
 </head>
@@ -32,7 +31,7 @@
 <div id="_wrapper">
 
 	<div id="_content">
-		<video  id="_webcam"></video>
+		<video  id="_webcam" playsinline></video>
 		<canvas id="_imageData"></canvas>
 		<canvas id="_faceSub"></canvas>
 		<canvas id="_t3d"></canvas>

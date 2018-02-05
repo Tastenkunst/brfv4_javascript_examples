@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Beyond Reality Face - BRFv4 - HTML5/Javascript face tracking</title>
-	<script async src="js/libs/brf_asmjs/BRFv4_JS_trial.js"></script>
+	<script async src="js/libs/brf_asmjs/BRFv4_JS_TK050218_v4.0.3_trial.js"></script>
 </head>
 
 <body>
@@ -27,7 +27,7 @@
 		function waitForSDK() {
 
 			if(brfv4 === null) {
-				brfv4 = {locateFile: function() { return "js/libs/brf_asmjs/BRFv4_JS_trial.js.mem" }};
+				brfv4 = {locateFile: function(fileName) { return "js/libs/brf_asmjs/" + fileName }};
 				initializeBRF(brfv4);
 			}
 

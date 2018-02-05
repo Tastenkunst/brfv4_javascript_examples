@@ -48,7 +48,7 @@ brfv4Example.start = function() {
 
 	brfv4Example.loader.preload([
 
-		brfv4BaseURL + "BRFv4_JS_trial.js",						// BRFv4 SDK
+		brfv4BaseURL + "BRFv4_JS_TK050218_v4.0.3_trial.js",						// BRFv4 SDK
 
 		"https://webrtc.github.io/adapter/adapter-latest.js",	// webcam polyfill for older browsers
 

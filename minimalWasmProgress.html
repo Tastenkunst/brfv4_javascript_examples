@@ -164,28 +164,6 @@
 
 			requestAnimationFrame(trackFaces);
 		}
-
-		function onResize () {
-
-			var imageData		= document.getElementById("_imageData");	// image data for BRFv4
-
-			var ww = window.innerWidth;
-			var wh = window.innerHeight;
-
-			var s = wh / imageData.height;
-
-			if (imageData.width * s < ww) {
-				s = ww / imageData.width;
-			}
-
-			var iw = imageData.width * s;
-			var ih = imageData.height * s;
-			var ix = (ww - iw) * 0.5;
-			var iy = (wh - ih) * 0.5;
-
-			imageData.style.transformOrigin = "0% 0%";
-			imageData.style.transform = "matrix("+s+", 0, 0, "+s+", "+ix+", "+iy+")";
-		}
 	}
 
 	(function() {
@@ -203,7 +181,7 @@
 
 			script.setAttribute("type", "text/javascript");
 			script.setAttribute("async", true);
-			script.setAttribute("src", brfv4BaseURL + "BRFv4_JS_TK070218_v4.0.4_trial.js");
+			script.setAttribute("src", brfv4BaseURL + "BRFv4_JS_TK190218_v4.0.5_trial.js");
 
 			document.getElementsByTagName("head")[0].appendChild(script);
 
@@ -229,7 +207,7 @@
 				xhr.send(null)
 			};
 
-			readWASMBinary(brfv4BaseURL + "BRFv4_JS_TK070218_v4.0.4_trial.wasm", function(r) {
+			readWASMBinary(brfv4BaseURL + "BRFv4_JS_TK190218_v4.0.5_trial.wasm", function(r) {
 
 				wasmBuffer = r; // see function waitForSDK. The ArrayBuffer needs to be added to the module object.
 

@@ -68,7 +68,7 @@ All available packages have roughly the same content and come with a set of exam
 
 You can input any image size.
 
-Internally BRFv4 uses a DYNx480 (landscape) or 480xDYN (portrait) image for the analysis. So 480px is the base size that every other input size get's scaled to, eg.
+Internally BRFv4 uses a DYNx480 (landscape) or 480xDYN (portrait) image for the analysis. So 480px is the base size that every other input size gets scaled to, eg.
 
 landscape:
 
@@ -117,7 +117,7 @@ More on that in the API, see link above.
 Can I track other objects like hands or neck?
 + No, it's a face tracker only.
 
-Can you increate the performance?
+Can you increase the performance?
 + We could remove some calculations in a commercial version, if you want to, but this comes at the price of reduced accuracy.
 
 Can you make the library smaller?

@@ -1,4 +1,4 @@
-# Beyond Reality Face SDK - v4.0.1 (BRFv4) - Readme
+# Beyond Reality Face SDK - v4.1.0 (BRFv4) - Readme
 
 ### What is BRFv4?
 
@@ -9,7 +9,7 @@ It is a real time face detection and tracking SDK. You put in image data (camera
 ### Ready to try!
 
 Read the EULA (eula.txt) carefully before using the SDK. Once you decide to use BRFv4 commercially, you will get a 
-separate license agreement, that you must agree to. You can try the SDK free of charge to evaluate if it fits your projects 
+separate license agreement, that you must agree to. You can try the SDK free of charge to evaluate if it fits your projects' 
 needs. Once you decided to use BRFv4 in your project, please contact us for a commercial license:
 
 + http://www.tastenkunst.com/#/contact
@@ -68,7 +68,7 @@ All available packages have roughly the same content and come with a set of exam
 
 You can input any image size.
 
-Internally BRFv4 uses a DYNx480 (landscape) or 480xDYN (portrait) image for the analysis. So 480px is the base size that every other input size get's scaled to, eg.
+Internally BRFv4 uses a DYNx480 (landscape) or 480xDYN (portrait) image for the analysis. So 480px is the base size that every other input size gets scaled to, eg.
 
 landscape:
 
@@ -82,7 +82,7 @@ portrait:
 +  720 x 1280 -> 480 x 854
 + 1080 x 1920 -> 480 x 854
 
-BRFv4 scales the results up again, so you don't have to do that yourself anymore.
+BRFv4 scales the results up again, so you don't have to do that yourself.
 All parameters named *size or *width are pixel values based on the actual image size.
 eg. telling BRF what face sizes to initially detect:
 
@@ -97,7 +97,7 @@ Where as if you work with a 1280x720 camera stream, you will need something like
 ```markdown
 brfManager.setFaceDetectionParams(216, 648, 12, 8);
 ```
-In the examples we generalize it a bit:
+In the examples we generalize that a bit:
 ```javascript
 // We have either a landscape area (desktop), then choose height or
 // we have a portrait area (mobile), then choose width as max face size.
@@ -115,15 +115,21 @@ More on that in the API, see link above.
 ### FAQ
 
 Can I track other objects like hands or neck?
-+ No, it's a face tracker only.
++ No, it is tracking faces only.
 
-Can you increate the performance?
+Can you increase the performance?
 + We could remove some calculations in a commercial version, if you want to, but this comes at the price of reduced accuracy.
 
 Can you make the library smaller?
-+ Usually the descriptor would be 80MB and more. It's already only 9MB for most binaries. So: We could go down in 1,5MB steps, but this will also massively decrease accuracy.
++ Usually the descriptor would be 80MB and more. It's already only 9MB for most platforms. So: We could go down in 1,5MB steps, but this will also massively accuracy. 
+Once you bought a license you can choose which size you want to go with.
 
 ### Release notes
+
+v4.1.0 - 11th July 2018
+
++ All: Changed 3D calculation model a bit. This might result in slightly different placement and rotationX.
++ Info: We started to work on BRFv5 (yeha!)
 
 v4.0.1 - 09th November 2017
 

@@ -35,6 +35,7 @@
 		"+++ advanced - face tracking +++":						null,
 
 		"advanced - face tracking - blink detection":			"js/examples/face_tracking/blink_detection.js",
+    "advanced - face tracking - blink detection center":			"js/examples/face_tracking/blink_detection_center.js",
 		"advanced - face tracking - ThreeJS example":			"js/examples/face_tracking/ThreeJS_example.js",
 		"advanced - face tracking - face texture overlay":		["assets/brfv4_face_textures.js", "js/examples/face_tracking/face_texture_overlay.js"],
 		"advanced - face tracking - face swap (two faces)":		"js/examples/face_tracking/face_swap_two_faces.js"

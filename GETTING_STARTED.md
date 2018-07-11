@@ -1,8 +1,8 @@
-# Beyond Reality Face SDK - v4.0.1 (BRFv4) - Getting Started ... 
+# Beyond Reality Face SDK - v4.1.0 (BRFv4) - Getting Started ... 
 
 ### ... with brfv4_javascript_examples
 
-+ Download or clone this Github repository to your computer.
++ Download or clone this Github repository.
 + Make sure to run the index.html file on a local server, eg. if you open this repo in Webstorm and run the index.html, Webstorm
 will automatically create a localhost for you. You could also use MAMP or any other tool to create a local server.
 
@@ -81,8 +81,8 @@ Dimensions are known and the SDK is ready. So now it's time to call BRFManager.i
 
 ##### trackFaces:
 
-BRFv4 is made to work on an image data stream. While calling BRFManager.update() once might might alright, it is best 
-to make sure that we get a proper result be calling BRFManager.update() a few times in a row.
+BRFv4 is made to work on an camera stream. While calling BRFManager.update() once might be alright, it is best 
+to make sure that we get a proper result be calling BRFManager.update() a few times in a row (maybe 10 times).
 
 
 

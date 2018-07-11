@@ -1,27 +1,39 @@
 (function() {
 	"use strict";
 
-	var stats = brfv4Example.stats;
+  function checkObjectAvailable() {
 
-	stats.init = function(numTimesPerFrame) {
+    if(!window.hasOwnProperty("brfv4Example")) {
 
-		stats.stats = new Stats();
-		stats.stats.setMode(0); // 0: fps, 1: ms, 2: mb
-		stats.stats.setNumTimesPerFrame(numTimesPerFrame);
+      setTimeout(checkObjectAvailable, 100);
 
-		var statsParent = document.getElementById("_stats");
-		if(!statsParent) { statsParent = document.body; }
+    } else if(window.brfv4Example.hasOwnProperty("stats")) {
 
-		statsParent.appendChild(stats.stats.domElement);
-	};
+      var stats = brfv4Example.stats;
 
-	stats.start = function() {
-		if(stats.stats != null) stats.stats.begin();	// Starts the FPS measurement.
-	};
+      stats.init = function(numTimesPerFrame) {
 
-	stats.end = function() {
-		if(stats.stats != null) stats.stats.end();		// Ends the FPS measurement.
-	};
+        stats.stats = new Stats();
+        stats.stats.setMode(0); // 0: fps, 1: ms, 2: mb
+        stats.stats.setNumTimesPerFrame(numTimesPerFrame);
+
+        var statsParent = document.getElementById("_stats");
+        if(!statsParent) { statsParent = document.body; }
+
+        statsParent.appendChild(stats.stats.domElement);
+      };
+
+      stats.start = function() {
+        if(stats.stats != null) stats.stats.begin();	// Starts the FPS measurement.
+      };
+
+      stats.end = function() {
+        if(stats.stats != null) stats.stats.end();		// Ends the FPS measurement.
+      };
+
+      stats.init(60);
+    }
+  }
 
 	/**
 	 * Based on MrDoobs https://github.com/mrdoob/stats.js
@@ -202,4 +214,6 @@
 			}
 		};
 	};
+
+  checkObjectAvailable();
 })();

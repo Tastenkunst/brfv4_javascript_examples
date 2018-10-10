@@ -59,7 +59,7 @@ function addBRFScript() {
 
 var brfv4Example = { stats: {} };
 var brfv4BaseURL = _isWebAssemblySupported ? "js/libs/brf_wasm/" : "js/libs/brf_asmjs/";
-var brfv4SDKName = "BRFv4_JS_TK110718_v4.1.0_trial"; // the currently available library
+var brfv4SDKName = "BRFv4_JS_TK101018_v4.1.0_trial"; // the currently available library
 var brfv4WASMBuffer = null;
 
 var handleTrackingResults = function(brfv4, faces, imageDataCtx) {
@@ -107,6 +107,7 @@ function initExample() {
   var brfv4         = null; // the library namespace
   var brfManager    = null; // the API
   var resolution    = null; // the image size
+  var timeoutId     = -1;
 
   handleImageInput();
 
@@ -159,6 +160,7 @@ function initExample() {
     resolution = new brfv4.Rectangle(0, 0, imageData.width, imageData.height);
     brfManager = new brfv4.BRFManager();
     brfManager.init(resolution, resolution, "com.tastenkunst.brfv4.js.examples.minimal.image");
+    brfManager.setNumFacesToTrack(2);
 
     trackFaces();
   }
@@ -167,6 +169,8 @@ function initExample() {
 
     if(brfv4Example.stats.start) brfv4Example.stats.start();
 
+    var timeStart = window.performance.now();
+
     imageDataCtx.drawImage(image, 0, 0, resolution.width, resolution.height);
 
     var data = imageDataCtx.getImageData(0, 0, resolution.width, resolution.height).data;
@@ -174,7 +178,7 @@ function initExample() {
     // BRFv4 is meant to be used with a webcam stream.
     // A single image should be updated multiple times.
 
-    for(var i = 0; i < 10; i++) {
+    for(var i = 0; i < 1; i++) {
       brfManager.update(data);
     }
 
@@ -182,7 +186,16 @@ function initExample() {
 
     if(brfv4Example.stats.end) brfv4Example.stats.end();
 
-    requestAnimationFrame(trackFaces);
+    if(timeoutId >= 0) {
+      clearTimeout(timeoutId);
+    }
+
+    var elapstedMs = window.performance.now() - timeStart;
+
+    // Choosing 5 FPS to show how the tracking converges.
+    // Update brf 10 times and comment this out to have the same effect without waiting.
+    // Sometimes it doesn't converge at all, so 10 updates should be enough for one/two faces.
+    timeoutId = setTimeout(function() { trackFaces(); }, (1000 / 1) - elapstedMs);
   }
 }
 

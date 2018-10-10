@@ -59,7 +59,7 @@ function addBRFScript() {
 
 var brfv4Example = { stats: {} };
 var brfv4BaseURL = _isWebAssemblySupported ? "js/libs/brf_wasm/" : "js/libs/brf_asmjs/";
-var brfv4SDKName = "BRFv4_JS_TK110718_v4.1.0_trial"; // the currently available library
+var brfv4SDKName = "BRFv4_JS_TK101018_v4.1.0_trial"; // the currently available library
 var brfv4WASMBuffer = null;
 
 var handleTrackingResults = function(brfv4, faces, imageDataCtx) {
@@ -108,6 +108,7 @@ function initExample() {
   var brfv4         = null; // the library namespace
   var brfManager    = null; // the API
   var resolution    = null; // the video stream resolution (usually 640x480)
+  var timeoutId     = -1;
 
   // iOS has this weird behavior that it freezes the camera stream, if the CPU get's
   // stressed too much, but it doesn't unfreeze the stream upon CPU relaxation.
@@ -242,6 +243,8 @@ function initExample() {
 
     if(brfv4Example.stats.start) brfv4Example.stats.start();
 
+    var timeStart = window.performance.now();
+
     imageDataCtx.setTransform(-1.0, 0, 0, 1, resolution.width, 0); // A virtual mirror should be... mirrored
     imageDataCtx.drawImage(webcam, 0, 0, resolution.width, resolution.height);
     imageDataCtx.setTransform( 1.0, 0, 0, 1, 0, 0); // unmirrored for drawing the results
@@ -252,7 +255,14 @@ function initExample() {
 
     if(brfv4Example.stats.end) brfv4Example.stats.end();
 
-    requestAnimationFrame(trackFaces);
+    if(timeoutId >= 0) {
+      clearTimeout(timeoutId);
+    }
+
+    var elapstedMs = window.performance.now() - timeStart;
+
+    // We don't need 60 FPS, the camera will deliver at 30 FPS anyway.
+    timeoutId = setTimeout(function() { trackFaces(); }, (1000 / 30) - elapstedMs);
   }
 }
 

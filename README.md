@@ -121,7 +121,7 @@ Can you increase the performance?
 + We could remove some calculations in a commercial version, if you want to, but this comes at the price of reduced accuracy.
 
 Can you make the library smaller?
-+ Usually the descriptor would be 80MB and more. It's already only 9MB for most platforms. So: We could go down in 1,5MB steps, but this will also massively accuracy. 
++ Usually the descriptor would be 80MB and more. It's already only 9MB for most platforms. So: We could go down in 1,5MB steps, but this will also massively decrease accuracy.
 Once you bought a license you can choose which size you want to go with.
 
 ### Release notes

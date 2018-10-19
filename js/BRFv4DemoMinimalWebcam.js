@@ -88,6 +88,11 @@ var onResize = function() {
   // implement this function in your minimal example, eg. fill the whole browser.
 };
 
+var onInitBRFv4 = function(brfv4, resolution) {
+  // Will be called when BRFv4 was initialized.
+  // implement this function in your minimal example.
+};
+
 function initExample() {
 
   // This function is called after the BRFv4 script was added.
@@ -220,6 +225,8 @@ function initExample() {
     resolution = new brfv4.Rectangle(0, 0, imageData.width, imageData.height);
     brfManager = new brfv4.BRFManager();
     brfManager.init(resolution, resolution, "com.tastenkunst.brfv4.js.examples.minimal.webcam");
+
+    onInitBRFv4(brfManager, resolution);
 
     if(isIOS) {
 

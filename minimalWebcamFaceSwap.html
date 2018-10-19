@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Beyond Reality Face - BRFv4 - HTML5/Javascript - minimal webcam example</title>
+
+  <style>
+    html, body { width: 100%; height: 100%; background-color: #ffffff; margin: 0; padding: 0; overflow: hidden; }
+    canvas { position: absolute; }
+  </style>
+</head>
+
+<body>
+
+<video  id="_webcam" style="display: none;" playsinline></video>
+<canvas id="_imageData"></canvas>
+<canvas id="_faceSub"></canvas>
+
+<script src="js/utils/BRFv4Stats.js"></script>
+<script src="js/BRFv4DemoMinimalWebcam.js"></script>
+
+<script>
+
+  var _size               = 256; // texture size
+  var _resolution         = null;
+
+  var _imageData          = document.getElementById("_imageData");  // image data for BRFv4
+  var _extractedFace0     = document.createElement("canvas"); // first face texture
+  var _extractedFace1     = document.createElement("canvas"); // second face texture
+
+  _extractedFace0.width   = _size;
+  _extractedFace0.height  = _size;
+  _extractedFace1.width   = _size;
+  _extractedFace1.height  = _size;
+
+  var _ctxFace0 = _extractedFace0.getContext("2d");
+  var _ctxFace1 = _extractedFace1.getContext("2d");
+
+  // BRFv4DemoMinimal.js defines:
+  // var handleTrackingResults = function(brfv4, faces, imageDataCtx)
+  // var onInitBRFv4 = function(brfv4)
+  // Here we overwrite them. The initialization code for BRFv4 should always be similar,
+  // that's why we put it into its own file.
+
+  onInitBRFv4 = function(
+    brfManager,     // api
+    resolution
+  ) {
+
+    console.log("onInitBRFv4", brfManager);
+
+    _resolution = resolution;
+
+    brfManager.setNumFacesToTrack(2); // two faces
+
+    // Relax starting conditions to eventually find more faces.
+
+    var maxFaceSize = resolution.height;
+
+    if(resolution.width < resolution.height) {
+      maxFaceSize = resolution.width;
+    }
+
+    brfManager.setFaceDetectionParams(    maxFaceSize * 0.20, maxFaceSize * 1.00, 12, 8);
+    brfManager.setFaceTrackingStartParams(maxFaceSize * 0.20, maxFaceSize * 1.00, 32, 35, 32);
+    brfManager.setFaceTrackingResetParams(maxFaceSize * 0.15, maxFaceSize * 1.00, 40, 55, 32);
+
+    var faceSwapCanvas = document.getElementById("_faceSub");
+
+    if(faceSwapCanvas) {
+      faceSwapCanvas.width = resolution.width;
+      faceSwapCanvas.height = resolution.height;
+    }
+  };
+
+  handleTrackingResults = function(
+    brfv4,          // namespace
+    faces,          // tracked faces
+    imageDataCtx    // canvas context to draw into
+  ) {
+
+    var faceSwapCanvas = document.getElementById("_faceSub");
+
+    if(faceSwapCanvas) {
+      var ctx = faceSwapCanvas.getContext("2d");
+      ctx.clearRect(0, 0, faceSwapCanvas.width, faceSwapCanvas.height);
+    }
+
+    if(faces.length < 2) {
+      return;
+    }
+
+    var face0 = faces[0];
+    var face1 = faces[1];
+
+    // leave out the inner mouth, remove the last 6 triangles:
+
+    var triangles = face0.triangles.concat();
+    triangles.splice(triangles.length - 3 * 6, 3 * 6);
+
+    if(face0.state === brfv4.BRFState.FACE_TRACKING &&
+      face1.state === brfv4.BRFState.FACE_TRACKING) {
+
+      _ctxFace0.clearRect(0, 0, _size, _size);
+      _ctxFace1.clearRect(0, 0, _size, _size);
+
+      var uvData0 = prepareFaceTexture(face0, _ctxFace0);
+      var uvData1 = prepareFaceTexture(face1, _ctxFace1);
+
+      drawTexture(face0.vertices, triangles, uvData1, _extractedFace1, 0.0);
+      drawTexture(face1.vertices, triangles, uvData0, _extractedFace0, 0.0);
+    }
+
+    for(var i = 0; i < faces.length; i++) {
+
+      var face = faces[i];
+
+      if(face.state === brfv4.BRFState.FACE_TRACKING_START ||
+        face.state === brfv4.BRFState.FACE_TRACKING) {
+
+        imageDataCtx.strokeStyle = "#00a0ff";
+
+        for(var k = 0; k < face.vertices.length; k += 2) {
+          imageDataCtx.beginPath();
+          imageDataCtx.arc(face.vertices[k], face.vertices[k + 1], 2, 0, 2 * Math.PI);
+          imageDataCtx.stroke();
+        }
+      }
+    }
+  };
+
+  function prepareFaceTexture(face, ctx) {
+
+    var f = _size / face.bounds.width;
+
+    if (face.bounds.height > face.bounds.width) {
+      f = _size / face.bounds.height;
+    }
+
+    ctx.drawImage(_imageData,
+      -face.bounds.x * f, -face.bounds.y * f,
+      _resolution.width * f , _resolution.height * f);
+
+    var uvData = [];
+
+    for(var u = 0; u < face.vertices.length; u += 2) {
+      var ux = (((face.vertices[u]   - face.bounds.x) * f) / _size);
+      var uy = (((face.vertices[u+1] - face.bounds.y) * f) / _size);
+      uvData.push(ux);
+      uvData.push(uy);
+    }
+
+    return uvData;
+  }
+
+  function drawTexture(vertices, triangles, uvData, texture, overlap) {
+
+    // Ported from: http://stackoverflow.com/questions/4774172/image-manipulation-and-texture-mapping-using-html5-canvas
+
+    var faceSwapCanvas = document.getElementById("_faceSub");
+
+    if(faceSwapCanvas) {
+
+      var ctx = faceSwapCanvas.getContext("2d");
+
+      var i = 0;
+      var l = triangles.length;
+
+      for(; i < l; i += 3) {
+
+        var i0 = triangles[i];
+        var i1 = triangles[i + 1];
+        var i2 = triangles[i + 2];
+
+        var x0 = vertices[i0 * 2];
+        var y0 = vertices[i0 * 2 + 1];
+        var x1 = vertices[i1 * 2];
+        var y1 = vertices[i1 * 2 + 1];
+        var x2 = vertices[i2 * 2];
+        var y2 = vertices[i2 * 2 + 1];
+
+        // enlarge the triangle half a pixel on each side
+        var cx = (x0 + x1 + x2) / 3.0;
+        var cy = (y0 + y1 + y2) / 3.0;
+
+        if(overlap) {
+
+          var pixel = overlap;
+
+          var d0 = Math.sqrt((cx - x0) * (cx - x0) + (cy - y0) * (cy - y0));
+          var d1 = Math.sqrt((cx - x1) * (cx - x1) + (cy - y1) * (cy - y1));
+          var d2 = Math.sqrt((cx - x2) * (cx - x2) + (cy - y2) * (cy - y2));
+
+          x0 = cx + (d0 + pixel) / d0 * (x0 - cx);
+          y0 = cy + (d0 + pixel) / d0 * (y0 - cy);
+          x1 = cx + (d1 + pixel) / d1 * (x1 - cx);
+          y1 = cy + (d1 + pixel) / d1 * (y1 - cy);
+          x2 = cx + (d2 + pixel) / d2 * (x2 - cx);
+          y2 = cy + (d2 + pixel) / d2 * (y2 - cy);
+
+        }
+
+        var u0 = uvData[i0 * 2] * texture.width;
+        var v0 = uvData[i0 * 2 + 1] * texture.height;
+        var u1 = uvData[i1 * 2] * texture.width;
+        var v1 = uvData[i1 * 2 + 1] * texture.height;
+        var u2 = uvData[i2 * 2] * texture.width;
+        var v2 = uvData[i2 * 2 + 1] * texture.height;
+
+        // Set clipping area so that only pixels inside the triangle will
+        // be affected by the image drawing operation
+        ctx.save(); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2); ctx.closePath(); ctx.clip();
+
+        // Compute matrix transform
+        var delta   = u0*v1 + v0*u2 + u1*v2 - v1*u2 - v0*u1 - u0*v2;
+        var delta_a = x0*v1 + v0*x2 + x1*v2 - v1*x2 - v0*x1 - x0*v2;
+        var delta_b = u0*x1 + x0*u2 + u1*x2 - x1*u2 - x0*u1 - u0*x2;
+        var delta_c = u0*v1*x2 + v0*x1*u2 + x0*u1*v2 - x0*v1*u2 - v0*u1*x2 - u0*x1*v2;
+        var delta_d = y0*v1 + v0*y2 + y1*v2 - v1*y2 - v0*y1 - y0*v2;
+        var delta_e = u0*y1 + y0*u2 + u1*y2 - y1*u2 - y0*u1 - u0*y2;
+        var delta_f = u0*v1*y2 + v0*y1*u2 + y0*u1*v2 - y0*v1*u2 - v0*u1*y2 - u0*y1*v2;
+
+        // Draw the transformed image
+        ctx.setTransform(
+          delta_a/delta, delta_d/delta,
+          delta_b/delta, delta_e/delta,
+          delta_c/delta, delta_f/delta);
+
+        ctx.drawImage(texture, 0, 0);
+        ctx.restore();
+      }
+    }
+  }
+
+  onResize = function () {
+
+    // fill whole browser
+
+    var imageData = document.getElementById("_imageData");
+    var faceSwapCanvas = document.getElementById("_faceSub");
+
+    var ww = window.innerWidth;
+    var wh = window.innerHeight;
+
+    var s = wh / imageData.height;
+
+    if(imageData.width * s < ww) {
+      s = ww / imageData.width;
+    }
+
+    var iw = imageData.width * s;
+    var ih = imageData.height * s;
+    var ix = (ww - iw) * 0.5;
+    var iy = (wh - ih) * 0.5;
+
+    imageData.style.transformOrigin = "0% 0%";
+    imageData.style.transform = "matrix("+s+", 0, 0, "+s+", "+ix+", "+iy+")";
+    faceSwapCanvas.style.transformOrigin = "0% 0%";
+    faceSwapCanvas.style.transform = "matrix("+s+", 0, 0, "+s+", "+ix+", "+iy+")";
+  };
+
+</script>
+
+</body>
+
+</html>

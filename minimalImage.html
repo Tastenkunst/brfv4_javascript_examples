@@ -20,15 +20,68 @@
 
 <script>
 
-  // BRFv4DemoMinimal.js defines: var handleTrackingResults = function(brfv4, faces, imageDataCtx)
-  // Here we overwrite it. The initialization code for BRFv4 should always be similar,
+  // BRFv4DemoMinimal.js defines:
+  // var handleTrackingResults = function(brfv4, faces, imageDataCtx)
+  // var onInitBRFv4 = function(brfv4)
+  // Here we overwrite them. The initialization code for BRFv4 should always be similar,
   // that's why we put it into its own file.
+
+  var _brfManager         = null;
+  var _resolution         = null;
+
+  onInitBRFv4 = function(
+    brfManager,     // api
+    resolution
+  ) {
+
+    console.log("onInitBRFv4", brfManager);
+
+    _brfManager = brfManager;
+    _resolution = resolution;
+
+    brfManager.setNumFacesToTrack(8); // up to eight faces
+
+    // Relax starting conditions to eventually find more faces.
+
+    var maxFaceSize = resolution.height;
+
+    if(resolution.width < resolution.height) {
+      maxFaceSize = resolution.width;
+    }
+
+    brfManager.setFaceDetectionParams(    maxFaceSize * 0.10, maxFaceSize * 0.50, 12, 8);
+    brfManager.setFaceTrackingStartParams(maxFaceSize * 0.05, maxFaceSize * 1.00, 32, 35, 32);
+    brfManager.setFaceTrackingResetParams(maxFaceSize * 0.00, maxFaceSize * 1.00, 40, 55, 32);
+  };
 
   handleTrackingResults = function(
     brfv4,          // namespace
     faces,          // tracked faces
     imageDataCtx    // canvas context to draw into
   ) {
+
+    // var allRects    = _brfManager.getAllDetectedFaces();
+    var mergedRects = _brfManager.getMergedDetectedFaces();
+
+    // for(var i = 0; i < allRects.length; i++) {
+    //
+    //   var rect = allRects[i];
+    //
+    //   console.log(rect);
+    //
+    //   imageDataCtx.strokeStyle = "#00a0ff";
+    //   imageDataCtx.rect(rect.x,rect.y,rect.width,rect.height);
+    //   imageDataCtx.stroke();
+    // }
+
+    for(var i = 0; i < mergedRects.length; i++) {
+
+      var rect = mergedRects[i];
+
+      imageDataCtx.strokeStyle = "#ffd200";
+      imageDataCtx.rect(rect.x,rect.y,rect.width,rect.height);
+      imageDataCtx.stroke();
+    }
 
     for(var i = 0; i < faces.length; i++) {
 

@@ -88,6 +88,11 @@ var onResize = function() {
   // implement this function in your minimal example, eg. fill the whole browser.
 };
 
+var onInitBRFv4 = function(brfManager, resolution) {
+  // Will be called when BRFv4 was initialized.
+  // implement this function in your minimal example.
+};
+
 function initExample() {
 
   // This function is called after the BRFv4 script was added.
@@ -162,6 +167,8 @@ function initExample() {
     brfManager.init(resolution, resolution, "com.tastenkunst.brfv4.js.examples.minimal.image");
     brfManager.setNumFacesToTrack(2);
 
+    onInitBRFv4(brfManager, resolution);
+
     trackFaces();
   }
 
@@ -192,7 +199,7 @@ function initExample() {
 
     var elapstedMs = window.performance.now() - timeStart;
 
-    // Choosing 5 FPS to show how the tracking converges.
+    // Choosing 1 FPS to show how the tracking converges.
     // Update brf 10 times and comment this out to have the same effect without waiting.
     // Sometimes it doesn't converge at all, so 10 updates should be enough for one/two faces.
     timeoutId = setTimeout(function() { trackFaces(); }, (1000 / 1) - elapstedMs);

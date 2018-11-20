@@ -88,7 +88,7 @@ var onResize = function() {
   // implement this function in your minimal example, eg. fill the whole browser.
 };
 
-var onInitBRFv4 = function(brfv4, resolution) {
+var onInitBRFv4 = function(brfManager, resolution) {
   // Will be called when BRFv4 was initialized.
   // implement this function in your minimal example.
 };

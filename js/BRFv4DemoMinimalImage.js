@@ -59,7 +59,7 @@ function addBRFScript() {
 
 var brfv4Example = { stats: {} };
 var brfv4BaseURL = _isWebAssemblySupported ? "js/libs/brf_wasm/" : "js/libs/brf_asmjs/";
-var brfv4SDKName = "BRFv4_JS_TK101018_v4.1.0_trial"; // the currently available library
+var brfv4SDKName = "BRFv4_JS_TK210219_v4.2.0_trial"; // the currently available library
 var brfv4WASMBuffer = null;
 
 var handleTrackingResults = function(brfv4, faces, imageDataCtx) {

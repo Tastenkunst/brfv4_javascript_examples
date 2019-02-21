@@ -120,8 +120,8 @@
 
 		// base distance
 
-		this.setPoint(v, 33, p0); // nose top
-		this.setPoint(v, 27, p1); // nose base
+		this.setPoint(v, 33, p0); // nose base
+		this.setPoint(v, 27, p1); // nose top
 		var baseDist = this.calcDistance(p0, p1) * 1.5;
 
 		// eyes as base line for orthogonal vector

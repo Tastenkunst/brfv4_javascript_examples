@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8">
+
+	<title>Beyond Reality Face - BRFv4 - HTML5/Javascript face tracking</title>
+
+	<style>
+
+		html, body		{ width:  100%; height:  100%; background-color: #ffffff; margin: 0; padding: 0; overflow: hidden; }
+    * {position: absolute; }
+
+	</style>
+
+</head>
+
+<body>
+
+  <video	id="_webcam" style="display: none;" playsinline></video>
+  <canvas id="_imageData"></canvas>
+  <canvas id="_resultData"></canvas>
+
+  <script>
+
+    var brfv4 = {};
+    var brfv4Example = { stats: {} };
+
+  </script>
+
+  <script src="js/utils/BRFv4Stats.js"></script>
+  <script src="js/utils/BRFv4PublicAPI.js"></script>
+
+  <script>
+
+    if(!window.Worker) {
+
+      throw "No worker support";
+    }
+
+    console.log("Loading worker (WASM)");
+
+    var worker = new Worker("js/libs/brf_wasm/BRFv4_JS_TK210219_v4.2.0_trial.worker.js");
+
+    worker.addEventListener("error", function(e) {
+
+      console.error("js worker error: ", e);
+
+    }, false);
+
+    var webcam          = document.getElementById("_webcam");     // our webcam video
+    var imageData       = document.getElementById("_imageData");  // image data for BRFv4
+    var resultData      = document.getElementById("_resultData");  // canvas fpr BRFv4 results
+    var imageDataCtx    = null;
+    var resultDataCtx   = null;
+
+    var resolution      = null;
+    var gotLastResult   = true;
+
+    var stats           = brfv4Example.stats;
+    if(stats.init) { stats.init(60); }
+
+    function waitForSDK() {
+
+      console.log("js waitForSDK");
+
+      worker.addEventListener('message', function(e) {
+
+        // console.log("js message", e);
+
+        if(e.data === "initSDK") {
+
+          initSDK();
+
+        } else if(e.data === "onInitBRFv4Manager") {
+
+          trackFaces();
+
+        } else {
+
+          var vertices = new Float32Array(e.data);
+
+          if(vertices.length === 68 * 2) {
+
+            // onTrackedFaces
+
+            gotLastResult = true;
+
+            resultDataCtx.clearRect(0, 0, 640, 480);
+            resultDataCtx.fillStyle="#00a0ff";
+
+            var r = 2;
+
+            for(var k = 0; k < vertices.length; k += 2) {
+
+              resultDataCtx.fillRect(vertices[k] - r, vertices[k + 1] - r, 2 * r, 2 * r);
+            }
+
+            if(brfv4Example.stats.end) brfv4Example.stats.end();
+          }
+        }
+
+      }, false);
+
+      console.log("js postMessage waitForSDK");
+
+      worker.postMessage("waitForSDK");
+    }
+
+    function initSDK() {
+
+      console.log("js initSDK");
+
+      resolution = new brfv4.Rectangle(0, 0, imageData.width, imageData.height);
+
+      // var imgData = ctx.getImageData(0, 0, 512, 512);
+      var resolutionData = new Uint32Array(4);
+      resolutionData.set([resolution.x, resolution.y, resolution.width, resolution.height]);
+
+      // "initBRFv4Manager"
+
+      worker.postMessage(resolutionData.buffer, [resolutionData.buffer]);
+    }
+
+    function trackFaces() {
+
+      cancelAnimationFrame(trackFaces);
+
+      imageDataCtx.setTransform(-1.0, 0, 0, 1, resolution.width, 0); // mirrored for draw of video
+      imageDataCtx.drawImage(webcam, 0, 0, resolution.width, resolution.height);
+      imageDataCtx.setTransform( 1.0, 0, 0, 1, 0, 0); // unmirrored for draw of results
+
+      if(gotLastResult) {
+
+        if(brfv4Example.stats.start) brfv4Example.stats.start();
+
+        gotLastResult = false;
+
+        var _imageData      = imageDataCtx.getImageData(0, 0, resolution.width, resolution.height);
+        var imageDataArray  = new Uint8ClampedArray(imageData.width * imageData.height * 4);
+
+        imageDataArray.set(_imageData.data);
+
+        worker.postMessage(imageDataArray.buffer, [imageDataArray.buffer]);
+
+      } else {
+
+        // skip frame, still waiting for tha last results from worker
+      }
+
+      requestAnimationFrame(trackFaces);
+    }
+
+    function startCamera() {
+
+      console.log("startCamera");
+
+      // Start video playback once the camera was fetched.
+      function onStreamFetched (mediaStream) {
+
+        console.log("onStreamFetched");
+
+        webcam.srcObject = mediaStream;
+        webcam.play();
+
+        // Check whether we know the video dimensions yet, if so, start BRFv4.
+        function onStreamDimensionsAvailable () {
+
+          console.log("onStreamDimensionsAvailable");
+
+          if (webcam.videoWidth === 0) {
+
+            setTimeout(onStreamDimensionsAvailable, 100);
+
+          } else {
+
+            // Resize the canvas to match the webcam video size.
+
+            imageData.width   = webcam.videoWidth;
+            imageData.height  = webcam.videoHeight;
+            imageDataCtx      = imageData.getContext("2d");
+
+            resultData.width   = webcam.videoWidth;
+            resultData.height  = webcam.videoHeight;
+            resultDataCtx      = resultData.getContext("2d");
+
+            onResize();
+
+            window.addEventListener("resize", onResize);
+
+            waitForSDK();
+          }
+        }
+
+        if(imageDataCtx === null) {
+
+          onStreamDimensionsAvailable();
+
+        } else {
+
+          trackFaces();
+        }
+      }
+
+      window.navigator.mediaDevices.getUserMedia({video: {width: 640, height: 480, frameRate: 30}})
+        .then(onStreamFetched).catch(function () { alert("No camera available."); });
+    }
+
+    startCamera();
+
+    function onResize () {
+
+      var imageData  = document.getElementById("_imageData");	// image data for BRFv4
+      var resultData = document.getElementById("_resultData");	// image data for BRFv4
+
+      var ww = window.innerWidth;
+      var wh = window.innerHeight;
+
+      var s = wh / imageData.height;
+
+      if (imageData.width * s < ww) {
+        s = ww / imageData.width;
+      }
+
+      var iw = imageData.width * s;
+      var ih = imageData.height * s;
+      var ix = (ww - iw) * 0.5;
+      var iy = (wh - ih) * 0.5;
+
+      imageData.style.transformOrigin = "0% 0%";
+      imageData.style.transform = "matrix("+s+", 0, 0, "+s+", "+ix+", "+iy+")";
+
+      resultData.style.transformOrigin = "0% 0%";
+      resultData.style.transform = "matrix("+s+", 0, 0, "+s+", "+ix+", "+iy+")";
+    }
+
+  </script>
+
+</body>
+
+</html>

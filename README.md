@@ -1,4 +1,12 @@
-# Beyond Reality Face SDK - v4.1.0 (BRFv4) - Readme
+## BRFv5 Released!
+
+BRFv4 will be discontinued in 2020.
+
+Check out the new BRFv5 JavaScript SDK here:
+
+### [https://github.com/tastenkunst/brfv5-browser](https://github.com/tastenkunst/brfv5-browser)
+
+## Beyond Reality Face SDK - v4.1.0 (BRFv4) - Readme
 
 ### What is BRFv4?
 
